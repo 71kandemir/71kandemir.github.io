@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Preview/local output is noindex in HTML and X-Robots-Tag headers.
