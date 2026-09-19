@@ -1,28 +1,277 @@
 <!doctype html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ffffff" />
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<title>Fırsata Hazırlık Programı · Giriş + 1.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fbf8f2; --surface:#fffdf9; --ink:#17232b; --muted:#66737a;
+  --line:#ddd9d0; --accent:#5b4b9a; --accent-soft:#efebfb; --good:#225f4b;
+  --max:760px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",Arial,sans-serif;line-height:1.55}
+button,input{font:inherit}
+button{cursor:pointer}
+.wrap{width:min(var(--max),calc(100% - 32px));margin:0 auto;padding:24px 0 64px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:26px}
+.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:600}
+.program{font-size:15px;font-weight:600;margin-top:4px}
+.status{font-size:12px;color:var(--muted);text-align:right}
+.progress{height:6px;background:#ebe6de;border-radius:99px;overflow:hidden;margin:0 0 28px}
+.progress>span{display:block;height:100%;width:0;background:var(--accent);transition:width .25s ease}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(22px,5vw,42px);box-shadow:0 8px 30px rgba(23,35,43,.04);margin-bottom:18px}
+.step[hidden]{display:none}
+h1{font-size:clamp(40px,9vw,72px);line-height:.98;letter-spacing:-.055em;margin:14px 0 22px;max-width:680px}
+h2{font-size:clamp(26px,5vw,38px);line-height:1.1;letter-spacing:-.025em;margin:8px 0 18px}
+h3{font-size:18px;margin:0 0 8px}
+p{margin:0 0 16px}
+.lede{font-size:20px;line-height:1.45;max-width:650px}
+.small{font-size:14px;color:var(--muted)}
+.rule{height:1px;background:var(--line);margin:26px 0}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:12px;padding:12px 18px;font-weight:600}
+.btn.secondary{background:transparent;color:var(--accent)}
+.btn:focus-visible,.choice:focus-visible,.checkrow:focus-within{outline:3px solid #d9b765;outline-offset:3px}
+.cards{display:grid;grid-template-columns:1fr;gap:12px;margin:20px 0}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff}
+.card b{display:block;margin-bottom:8px}
+.options{display:grid;gap:10px;margin:20px 0}
+.choice{width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px 16px;color:var(--ink)}
+.choice:hover{border-color:#b8b0cf}
+.choice.correct{border-color:var(--good);background:#eef7f3}
+.choice.wrong{border-color:#b35a5a;background:#fff3f3}
+.feedback{border-left:4px solid var(--accent);background:var(--accent-soft);padding:14px 16px;border-radius:8px;margin:18px 0 0}
+.feedback.good{border-left-color:var(--good);background:#eef7f3}
+.feedback[hidden]{display:none}
+.lenses{display:grid;gap:12px;margin-top:18px}
+.lens{border-top:1px solid var(--line);padding-top:16px}
+.lens:first-child{border-top:0;padding-top:0}
+.num{display:inline-flex;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent);font-weight:700;margin-right:8px}
+.quote{font-size:22px;line-height:1.35;font-weight:600;margin:22px 0;padding-left:18px;border-left:4px solid var(--accent)}
+.checks{display:grid;gap:8px;margin:18px 0}
+.checkrow{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);padding:12px 14px;border-radius:12px;background:#fff}
+.checkrow input{margin-top:4px;accent-color:var(--accent)}
+.summary{background:#f4f0e8;border-radius:14px;padding:18px;margin-top:20px}
+.footer-note{font-size:12px;color:var(--muted);margin-top:24px}
+.pill{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:6px 9px;margin-bottom:8px}
+@media(min-width:700px){.cards.three{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.progress>span{transition:none}}
+@media print{.progress,.actions,.status{display:none}.step[hidden]{display:block}.panel{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="kicker">Fırsata Hazırlık Programı</div>
+      <div class="program">Giriş + 1.1 · Meslek değil, hayat modeli seç</div>
+    </div>
+    <div class="status">Owner preview · v1<br>19 Eylül 2026</div>
+  </header>
+  <div class="progress" aria-label="İlerleme"><span id="bar"></span></div>
 
+  <main id="lesson">
+    <section class="panel step" data-step="0">
+      <div class="pill">İlk öğrenme deneyimi</div>
+      <h1>Bir iş değil.<br>Yaşayacağın bir gün.</h1>
+      <p class="lede">Bir meslek adı kulağa iyi gelebilir. Bir marka, ülke, gemi, otel ya da restoran heyecan verebilir. Ama işin adı sana o işi hangi hayatın içinde yaşayacağını söylemez.</p>
+      <div class="rule"></div>
+      <p>Bu derste sana bir hayat seçmeyeceğiz.</p>
+      <p><strong>Önce bir işi, onun yaşattığı hayattan ayırmayı öğreneceğiz.</strong></p>
+      <p class="small">CV, Hazırlık Görünümü, üyelik, sesli ajan veya kesin hedef gerekmez.</p>
+      <div class="actions"><button class="btn next">Başla</button></div>
+    </section>
 
+    <section class="panel step" data-step="1" hidden>
+      <div class="kicker">İlk karşılaşma</div>
+      <h2>Aynı sektörde üç temsilî fırsat.</h2>
+      <p class="small">Bunlar gerçek şirket ilanları değildir. Koşullar eğitim için kurgulanmıştır.</p>
+      <div class="cards three">
+        <article class="card"><b>A · Şehirde çalışma</b><p>İşe kendi yaşam alanından gidip geliyorsun. İş ve özel hayat fiziksel olarak birbirinden ayrı.</p></article>
+        <article class="card"><b>B · Sezonluk tesis yaşamı</b><p>Belirli bir dönem başka bir bölgede çalışıyorsun. Konaklama sağlanıyor. İş ve yaşam çevresi birbirine daha çok karışabilir.</p></article>
+        <article class="card"><b>C · Gemide çalışma</b><p>Çalıştığın yer aynı zamanda yaşadığın yer. Farklı ülkelerden insanlarla aynı operasyonun içindesin.</p></article>
+      </div>
+      <h3>Hangisi daha iyi?</h3>
+      <div class="options quiz" data-correct="unknown">
+        <button class="choice" data-value="a">A</button>
+        <button class="choice" data-value="b">B</button>
+        <button class="choice" data-value="c">C</button>
+        <button class="choice" data-value="unknown">Henüz bilmiyoruz</button>
+      </div>
+      <div class="feedback good" aria-live="polite" hidden><strong>Henüz bilmiyoruz.</strong><br>Görev, saat, ücret, dinlenme, ekip, yönetim, öğrenme, sözleşme ve başka koşullar eksik. Görünen tek bir özellik karar vermek için yeterli değil.</div>
+      <div class="actions"><button class="btn next" disabled>Devam et</button></div>
+    </section>
 
-<script type="module" crossorigin src="/assets/index-B5y324Gg.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-e0pSv3fj.css">
-      <title data-gastrota-managed="true">Fırsata Hazırlık Programı | Gastrota</title>
-    <meta data-gastrota-managed="true" name="description" content="Kariyer hazırlığını yön, kanıt, iletişim ve karar odağında on modüllük uygulanabilir bir öğrenme yoluna dönüştüren programı incele." />
-    <meta data-gastrota-managed="true" name="robots" content="noindex, nofollow" />
-    <meta data-gastrota-managed="true" name="gastrota-indexing" content="disabled" />
-    <meta data-gastrota-managed="true" name="gastrota-route-path" content="/egitim/firsata-hazirlik" />
-    <link data-gastrota-managed="true" rel="preload" href="/images/gastrota-logo-poster.webp" as="image" type="image/webp" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <noscript>
-      <main>
-        <h1>Gastrota Hazırlık Görünümü</h1>
-        <p>Bu öz değerlendirmeyi kullanmak için tarayıcınızda JavaScript'i etkinleştirmeniz gerekir.</p>
-      </main>
-    </noscript>
-  </body>
+    <section class="panel step" data-step="2" hidden>
+      <div class="kicker">Aynı iş, farklı hayat</div>
+      <h2>Bir fırsatın hayat modelini yedi pencereden oku.</h2>
+      <div class="lenses">
+        <div class="lens"><h3><span class="num">1</span>Gün ritmi</h3><p>Ne zaman çalışıyorsun? Günün ne kadarı gerçekten sana kalıyor? Vardiya, sezon veya kontrat hayatını nasıl şekillendiriyor?</p></div>
+        <div class="lens"><h3><span class="num">2</span>Yaşadığın yer ve hareketlilik</h3><p>Evinde mi kalıyorsun, taşınıyor musun, aynı yerde mi çalışıyorsun? İş için hangi coğrafi esnekliği kabul ediyorsun?</p></div>
+        <div class="lens"><h3><span class="num">3</span>Kişisel alan ve ilişkiler</h3><p>İşten çıktığında iş çevresinden uzaklaşabiliyor musun? Yaşam alanını paylaşıyor musun? Sosyal hayatın bu düzenle nasıl değişebilir?</p></div>
+        <div class="lens"><h3><span class="num">4</span>Bedensel ve zihinsel yük</h3><p>İş senden ne kadar tempo, dikkat, dayanıklılık veya sosyal enerji istiyor? Burada tanı koymuyoruz; çalışma biçiminin insandan ne istediğini görüyoruz.</p></div>
+        <div class="lens"><h3><span class="num">5</span>Öğrenme ve ilişki ağı</h3><p>Kimlerden öğrenebilirsin? Hangi standardı görebilirsin? Prestijli görünen yer ile gerçekten öğretici yer aynı olmak zorunda değil.</p></div>
+        <div class="lens"><h3><span class="num">6</span>Gelirin hayat içindeki karşılığı</h3><p>Nerede yaşayacaksın? Hangi giderler sana ait? Başlangıçta ne harcaman gerekiyor? Aynı para, farklı hayatlarda aynı anlama gelmeyebilir.</p></div>
+        <div class="lens"><h3><span class="num">7</span>Bir sonraki kapı</h3><p>Bu iş sana yeni bir beceri, referans, operasyon deneyimi, ilişki ağı veya sonraki geçiş için gerçek malzeme bırakıyor mu?</p></div>
+      </div>
+      <div class="actions"><button class="btn next">Devam et</button></div>
+    </section>
+
+    <section class="panel step" data-step="3" hidden>
+      <div class="kicker">Duraklat</div>
+      <h2>Hangisi daha sağlam?</h2>
+      <div class="options quiz" data-correct="b">
+        <button class="choice" data-value="a">“Cruise daha iyi çünkü dünyayı geziyorsun.”</button>
+        <button class="choice" data-value="b">“Cruise benim için ilgi çekici olabilir; ama görev, çalışma-dinlenme düzeni, yaşam alanı, sözleşme ve öğrenme hakkında daha fazla bilgi görmeden karar veremem.”</button>
+      </div>
+      <div class="feedback good" aria-live="polite" hidden><strong>İkinci cümle daha sağlam.</strong><br>Fırsatı küçültmiyor; bilinmeyeni başarı hikâyesiyle doldurmuyor. Bir şeyi merak etmek ile onun sana uygun olduğunu bilmek aynı değil.</div>
+      <div class="actions"><button class="btn next" disabled>Devam et</button></div>
+    </section>
+
+    <section class="panel step" data-step="4" hidden>
+      <div class="kicker">Karşı örnek</div>
+      <h2>“Yerel = küçük fırsat” da otomatik doğru değil.</h2>
+      <p>Bir şehir otelindeki iş sana ilk anda daha sıradan görünebilir. Ama ekipten ne öğreneceğini, yöneticinin çalışma biçimini, vardiya düzenini, üstleneceğin sorumlulukları ve kurum içindeki ilerleme yollarını henüz bilmiyor olabilirsin.</p>
+      <div class="quote">Yurt dışı = iyi hayat<br>Lüks marka = iyi iş<br>Yüksek ücret = doğru seçim<br>Başlangıç rolü = değersiz iş</div>
+      <p>Bu eşitliklerin hiçbiri kendiliğinden doğru değildir.</p>
+      <p><strong>Fırsatların değerini düşürmüyoruz. Onları daha iyi okumayı öğreniyoruz.</strong></p>
+      <div class="actions"><button class="btn next">Devam et</button></div>
+    </section>
+
+    <section class="panel step" data-step="5" hidden>
+      <div class="kicker">Öğrenme kontrolü</div>
+      <h2>Aynı unvan, benzer ücret.</h2>
+      <p>Hangisi doğrudur?</p>
+      <div class="options quiz" data-correct="b">
+        <button class="choice" data-value="a">Aynı unvan + benzer ücret varsa iki fırsat yaklaşık aynıdır.</button>
+        <button class="choice" data-value="b">Operasyon, günlük görev, çalışma düzeni, yaşam koşulu, öğrenme ortamı ve sonraki kapı farklıysa aynı unvan iki farklı hayat anlamına gelebilir.</button>
+        <button class="choice" data-value="c">Büyük markadaki iş otomatik olarak daha iyi fırsattır.</button>
+      </div>
+      <div class="feedback good" aria-live="polite" hidden><strong>Doğru.</strong><br>Unvan bir etikettir. Hayat modeli görev, koşul, zaman, yer, insan, yük ve gelecek etkisinin birleşimidir.</div>
+      <div class="actions"><button class="btn next" disabled>Devam et</button></div>
+    </section>
+
+    <section class="panel step" data-step="6" hidden>
+      <div class="kicker">Bilinmeyeni boş bırak</div>
+      <h2>“Konaklama sağlanır.”</h2>
+      <p>Bundan hangisini kesin biliyorsun?</p>
+      <div class="options quiz" data-correct="d">
+        <button class="choice" data-value="a">Konaklama ücretsizdir.</button>
+        <button class="choice" data-value="b">Tek kişilik odadır.</button>
+        <button class="choice" data-value="c">İşyerine yakındır.</button>
+        <button class="choice" data-value="d">Yalnız konaklamanın sağlandığını; diğer ayrıntıların henüz bilinmediğini.</button>
+      </div>
+      <div class="feedback good" aria-live="polite" hidden><strong>Doğru.</strong><br>Yazılanı gör. Yorumunu ayır. Bilinmeyeni bilinmeyen bırak. Kararını değiştirecek bilgiyi sor.</div>
+      <div class="actions"><button class="btn next" disabled>Devam et</button></div>
+    </section>
+
+    <section class="panel step" data-step="7" hidden>
+      <div class="kicker">İsteğe bağlı</div>
+      <h2>Şu an senin için hangi alanlar önemli olabilir?</h2>
+      <p class="small">Doldurmak zorunda değilsin. Bu seçim sana “uygun meslek” üretmez.</p>
+      <div class="checks" id="reflection">
+        <label class="checkrow"><input type="checkbox" value="Gün ritmi">Gün ritmi</label>
+        <label class="checkrow"><input type="checkbox" value="Yaşadığım yer / hareketlilik">Yaşadığım yer / hareketlilik</label>
+        <label class="checkrow"><input type="checkbox" value="Kişisel alan ve ilişkiler">Kişisel alan ve ilişkiler</label>
+        <label class="checkrow"><input type="checkbox" value="Bedensel / zihinsel yük">Bedensel / zihinsel yük</label>
+        <label class="checkrow"><input type="checkbox" value="Öğrenme ve ilişki ağı">Öğrenme ve ilişki ağı</label>
+        <label class="checkrow"><input type="checkbox" value="Gelirin hayat içindeki karşılığı">Gelirin hayat içindeki karşılığı</label>
+        <label class="checkrow"><input type="checkbox" value="Bir sonraki kapı">Bir sonraki kapı</label>
+        <label class="checkrow"><input type="checkbox" value="Henüz bilmiyorum">Henüz bilmiyorum</label>
+      </div>
+      <div class="feedback" id="reflectFeedback">Burada doğru üçlü yok. Yalnız bir sonraki fırsatta hangi bilgileri özellikle görmek isteyebileceğini fark ediyorsun.</div>
+      <div class="actions"><button class="btn next">Devam et</button></div>
+    </section>
+
+    <section class="panel step" data-step="8" hidden>
+      <div class="kicker">Transfer</div>
+      <h2>“Bu işi kabul et. Maaşı daha yüksek.”</h2>
+      <p>Sen henüz yalnız maaşı biliyorsun. Hangi cevap daha sağlam?</p>
+      <div class="options quiz" data-correct="c">
+        <button class="choice" data-value="a">“Tamam, yüksek maaşsa kabul ederim.”</button>
+        <button class="choice" data-value="b">“Hayır, para önemli değil.”</button>
+        <button class="choice" data-value="c">“Maaş önemli; ama görevi, çalışma düzenini, yaşam maliyetini, bana ait giderleri, öğrenme ortamını ve bu işin sonraki etkisini görmeden toplam karşılığı bilmiyorum.”</button>
+      </div>
+      <div class="feedback good" aria-live="polite" hidden><strong>Doğru.</strong><br>Maaşı küçültmedin. Hayatı da maaşa indirmedin.</div>
+      <div class="actions"><button class="btn next" disabled>Devam et</button></div>
+    </section>
+
+    <section class="panel step" data-step="9" hidden>
+      <div class="kicker">Yanında kalan</div>
+      <h2>Bir işin adı, yaşayacağın günü anlatmaz.</h2>
+      <p>Bir fırsata baktığında önce üç soruyu aç:</p>
+      <div class="summary">
+        <p><strong>1.</strong> Bu işte gerçekte ne yapacağım?</p>
+        <p><strong>2.</strong> Bu işi hangi hayatın içinde yaşayacağım?</p>
+        <p><strong>3.</strong> Bilmediğim hangi koşul kararımı değiştirebilir?</p>
+      </div>
+      <p>Bu üç soruya bugün cevap vermek zorunda değilsin. Ama artık neye bakacağını biliyorsun.</p>
+      <div class="actions"><button class="btn next">1.2’ye geçişi gör</button></div>
+    </section>
+
+    <section class="panel step" data-step="10" hidden>
+      <div class="kicker">Sonraki adım · 1.2</div>
+      <h2>Aynı beceri, sektörün kaç farklı yerinde değer taşıyabilir?</h2>
+      <p>Restoran, otel, catering, cruise, yat, üretim, tedarik, teknoloji ve eğitim birbirinden kopuk dünyalar değildir.</p>
+      <p><strong>1.2 · Gastronomi ve hospitality ekosistemini gör</strong> bölümünde, görünen işin arkasındaki sistemi açacağız.</p>
+      <p>Amaç yüzlerce meslek ezberletmek değil. Daha önce sormadığın yararlı soruları görebilmeni sağlamak.</p>
+      <div class="summary" id="finishSummary">
+        <strong>Bu oturumdaki öğrenme kontrolleri tamamlandı.</strong>
+        <p class="small">Bu ifade gerçek işte davranış değişikliğinin kanıtı değildir. Öğrenme aktarımı yeni bir örnekte ayrıca sınanmalıdır.</p>
+      </div>
+      <div class="actions"><button class="btn secondary" id="restart">Baştan gözden geçir</button></div>
+      <p class="footer-note">Bu preview kişisel yanıtları sunucuya göndermez veya kalıcı olarak saklamaz. Temsilî sahneler eğitim kurgusudur. Gerçek şirket şartı veya belirli iş modelinin üstünlüğü değildir.</p>
+    </section>
+  </main>
+</div>
+<script>
+document.documentElement.classList.add('js');
+(() => {
+  const steps=[...document.querySelectorAll('.step')];
+  const bar=document.getElementById('bar');
+  let current=0;
+  const show=(n)=>{
+    current=Math.max(0,Math.min(n,steps.length-1));
+    steps.forEach((s,i)=>s.hidden=i!==current);
+    bar.style.width=((current)/(steps.length-1)*100)+'%';
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  document.querySelectorAll('.next').forEach(btn=>btn.addEventListener('click',()=>show(current+1)));
+  document.querySelectorAll('.quiz').forEach(q=>{
+    const correct=q.dataset.correct;
+    const feedback=q.parentElement.querySelector('.feedback');
+    const next=q.parentElement.querySelector('.next');
+    q.querySelectorAll('.choice').forEach(btn=>btn.addEventListener('click',()=>{
+      q.querySelectorAll('.choice').forEach(b=>b.classList.remove('correct','wrong'));
+      if(btn.dataset.value===correct){
+        btn.classList.add('correct');
+        feedback.hidden=false;
+        next.disabled=false;
+      }else{
+        btn.classList.add('wrong');
+        feedback.hidden=true;
+        next.disabled=true;
+      }
+    }));
+  });
+  document.getElementById('restart').addEventListener('click',()=>{
+    document.querySelectorAll('.choice').forEach(b=>b.classList.remove('correct','wrong'));
+    document.querySelectorAll('.quiz').forEach(q=>{
+      const fb=q.parentElement.querySelector('.feedback'); if(fb) fb.hidden=true;
+      const n=q.parentElement.querySelector('.next'); if(n) n.disabled=true;
+    });
+    document.querySelectorAll('#reflection input').forEach(i=>i.checked=false);
+    show(0);
+  });
+  show(0);
+})();
+</script>
+</body>
 </html>
